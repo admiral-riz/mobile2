@@ -24,7 +24,6 @@ import com.example.rizqi_elektronik.MainLogin;
 import com.example.rizqi_elektronik.EditProfile;
 import com.example.rizqi_elektronik.R;
 import com.example.rizqi_elektronik.RegisterAPI;
-import com.example.rizqi_elektronik.RetrofitClientInstance;
 import com.example.rizqi_elektronik.ServerAPI;
 import com.example.rizqi_elektronik.databinding.FragmentProfileBinding;
 

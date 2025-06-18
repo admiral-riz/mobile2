@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Termurah"
+                android:text="Most Cheaps"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -104,7 +104,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Best Seller"
+                android:text="Most View"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 

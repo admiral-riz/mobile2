@@ -20,7 +20,6 @@ import com.example.rizqi_elektronik.Checkout;
 import com.example.rizqi_elektronik.MainLogin;
 import com.example.rizqi_elektronik.OrderAdapter;
 import com.example.rizqi_elektronik.R;
-import com.example.rizqi_elektronik.Checkout; // Import CheckoutActivity
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

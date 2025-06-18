@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -26,10 +25,8 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 // Tidak lagi dibutuhkan untuk parsing JSON utama
-import org.json.JSONArray;
 
 // Tidak lagi dibutuhkan untuk parsing JSON utama
-import org.json.JSONException;
 
 // Hanya untuk parsing profil jika masih menggunakan JSONObject
 import org.json.JSONObject;

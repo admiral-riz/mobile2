@@ -1,6 +1,5 @@
 package com.example.rizqi_elektronik.ui.home;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;

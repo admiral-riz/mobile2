@@ -28,7 +28,6 @@ import com.bumptech.glide.Glide;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
-import com.example.rizqi_elektronik.EditProfile;
 import com.example.rizqi_elektronik.R;
 import com.example.rizqi_elektronik.RegisterAPI;
 import com.example.rizqi_elektronik.Product;
