@@ -97,4 +97,6 @@ public interface RegisterAPI {
     @GET("get_order_history.php")
     Call<OrderResponse> getOrderHistory(@Query("email") String email);
 
+    @GET("get_order_detail.php")
+    Call<OrderDetailApiResponse> getOrderDetail(@Query("order_id") int orderId);
 }

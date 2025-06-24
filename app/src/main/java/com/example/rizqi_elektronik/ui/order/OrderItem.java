@@ -1,11 +1,24 @@
 package com.example.rizqi_elektronik.ui.order;
 
+import com.google.gson.annotations.SerializedName;
+
 public class OrderItem {
+    @SerializedName("product_id")
     private String kode;
+
+    @SerializedName("product_image")
     private String foto;
+
+    @SerializedName("product_name")
     private String merk;
+
+    @SerializedName("price")
     private double hargajual;
+
+    // Tidak ada field stok di JSON, biarkan default 0
     private int stok;
+
+    @SerializedName("quantity")
     private int qty;
 
     // Constructor
