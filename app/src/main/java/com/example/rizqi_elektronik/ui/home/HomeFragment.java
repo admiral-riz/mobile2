@@ -72,10 +72,6 @@ public class HomeFragment extends Fragment {
 
         loadProfile();
 
-        if (getActivity() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        }
-
         // Setup ImageSlider
         ImageSlider imageSlider = root.findViewById(R.id.imageSlider);
         ArrayList<SlideModel> slideModels = new ArrayList<>();
