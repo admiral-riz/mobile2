@@ -1,6 +1,7 @@
 package com.example.rizqi_elektronik.ui.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.rizqi_elektronik.Detail;
 import com.example.rizqi_elektronik.Product;
 import com.example.rizqi_elektronik.R;
+import com.example.rizqi_elektronik.RegisterAPI;
+import com.example.rizqi_elektronik.RetrofitClientInstance;
 import com.example.rizqi_elektronik.ServerAPI;
 import com.example.rizqi_elektronik.ui.order.OrderItem;
 import com.google.gson.Gson;
@@ -23,6 +27,11 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeProductAdapter extends RecyclerView.Adapter<HomeProductAdapter.ProductViewHolder> {
 
@@ -61,12 +70,15 @@ public class HomeProductAdapter extends RecyclerView.Adapter<HomeProductAdapter.
             super(itemView);
             imgProduct = itemView.findViewById(R.id.imgProduct);
             imgBtnAddToCart = itemView.findViewById(R.id.imgBtnAddToCart);
+            imgBtnDescription = itemView.findViewById(R.id.imgBtnDescription);
             tvProductName = itemView.findViewById(R.id.tvProductName);
             tvProductCategory = itemView.findViewById(R.id.tvProductCategory);
             tvProductPrice = itemView.findViewById(R.id.tvProductPrice);
         }
 
         public void bind(Product product) {
+            RegisterAPI api = RetrofitClientInstance.getRetrofitInstance().create(RegisterAPI.class);
+
             tvProductName.setText(product.getMerk());
             tvProductCategory.setText("Kategori: " + product.getKategori());
             tvProductPrice.setText("Rp " + String.format("%,.0f", product.getHargajual()));
@@ -84,6 +96,29 @@ public class HomeProductAdapter extends RecyclerView.Adapter<HomeProductAdapter.
                 } else {
                     Toast.makeText(context, "Stok produk kosong", Toast.LENGTH_SHORT).show();
                 }
+            });
+
+            imgBtnDescription.setOnClickListener(v -> {
+                Call<ResponseBody> callUpdateView = api.updateView(product.getKode());
+                callUpdateView.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            product.setViewCount(product.getViewCount() + 1);
+
+                            Intent intent = new Intent(context, Detail.class);
+                            intent.putExtra("produk", product);
+                            context.startActivity(intent);
+                        } else {
+                            Toast.makeText(context, "Gagal update view", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             });
 
         }
