@@ -70,5 +70,11 @@ public interface RegisterAPI {
             @Part MultipartBody.Part image
     );
 
+    @POST("post_change_password.php")
+    Call<ResponseBody> changePassword(
+            @Query("email") String email,
+            @Query("old_password") String oldPassword,
+            @Query("new_password") String newPassword
+    );
 
 }

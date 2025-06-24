@@ -67,6 +67,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvEmail" />
 
+    <!-- Tombol Ganti Password -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnChangePassword"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        style="@style/Widget.Material3.Button.IconButton.Filled"
+        app:backgroundTint="@color/primary"
+        android:text="Ganti Password"
+        android:textAllCaps="true"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnEditProfile" />
+
     <!-- Tombol Kontak Kami -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnContactUs"
@@ -81,7 +97,7 @@
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnEditProfile" />
+        app:layout_constraintTop_toBottomOf="@id/btnChangePassword" />
 
     <!-- Tombol Logout -->
     <com.google.android.material.button.MaterialButton

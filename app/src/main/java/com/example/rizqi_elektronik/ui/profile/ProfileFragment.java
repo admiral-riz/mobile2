@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.example.rizqi_elektronik.ChangePassword;
 import com.example.rizqi_elektronik.Kontak;
 import com.example.rizqi_elektronik.MainLogin;
 import com.example.rizqi_elektronik.EditProfile;
@@ -83,6 +84,13 @@ public class ProfileFragment extends Fragment {
             Intent intent = new Intent(getActivity(), EditProfile.class);
             startActivity(intent);
         });
+
+        // Tombol Ganti Password
+        binding.btnChangePassword.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ChangePassword.class);
+            startActivity(intent);
+        });
+
 
         // Tombol Kontak Kami
         binding.btnContactUs.setOnClickListener(v -> {
