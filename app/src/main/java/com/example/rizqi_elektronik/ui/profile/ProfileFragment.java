@@ -23,6 +23,7 @@ import com.example.rizqi_elektronik.ChangePassword;
 import com.example.rizqi_elektronik.Kontak;
 import com.example.rizqi_elektronik.MainLogin;
 import com.example.rizqi_elektronik.EditProfile;
+import com.example.rizqi_elektronik.OrderHistory;
 import com.example.rizqi_elektronik.R;
 import com.example.rizqi_elektronik.RegisterAPI;
 import com.example.rizqi_elektronik.ServerAPI;
@@ -91,6 +92,11 @@ public class ProfileFragment extends Fragment {
             startActivity(intent);
         });
 
+        // Tombol Order History
+        binding.btnOrderHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), OrderHistory.class);
+            startActivity(intent);
+        });
 
         // Tombol Kontak Kami
         binding.btnContactUs.setOnClickListener(v -> {

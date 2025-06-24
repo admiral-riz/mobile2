@@ -13,4 +13,11 @@
     <color name="primary">#106EE9</color>
     <color name="secondary">#535659</color>
     <color name="red">#D30000</color>
+    <color name="colorPrimary">#106EEA</color>
+    <color name="colorSuccess">#4CAF50</color>
+    <color name="colorSuccessDark">#388E3C</color>
+    <color name="colorWarning">#FFA000</color>
+    <color name="colorInfo">#2196F3</color>
+    <color name="colorGray">#9E9E9E</color>
+    <color name="colorDivider">#E0E0E0</color>
 </resources>

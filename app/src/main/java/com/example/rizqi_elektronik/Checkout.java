@@ -1,5 +1,7 @@
 package com.example.rizqi_elektronik;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +31,8 @@ import com.google.gson.reflect.TypeToken;
 // Tidak lagi dibutuhkan untuk parsing JSON utama
 
 // Hanya untuk parsing profil jika masih menggunakan JSONObject
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -40,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -72,6 +77,7 @@ public class Checkout extends AppCompatActivity {
     private double subtotal = 0;
     private String estimatedDelivery = "-";
     private String selectedPaymentMethod = "COD";
+    private int getSelectedPaymentMethod = 0;
 
     private static final int originCityId = 181;
     private static final String PHP_API_URL = ServerAPI.BASE_URL + "ongkir.php";
@@ -127,6 +133,11 @@ public class Checkout extends AppCompatActivity {
             RadioButton selectedRadioButton = findViewById(checkedId);
             if (selectedRadioButton != null) {
                 selectedPaymentMethod = selectedRadioButton.getText().toString().equals("Cash On Delivery (COD)") ? "COD" : "Transfer Bank";
+                if (selectedPaymentMethod.equals("Transfer Bank")){
+                    getSelectedPaymentMethod = 1;
+                } else {
+                    getSelectedPaymentMethod = 0;
+                }
             }
         });
 
@@ -246,7 +257,7 @@ public class Checkout extends AppCompatActivity {
 
         // Checkout button listener
         btnCheckout.setOnClickListener(v -> {
-            // Validate personal information
+            // Validate inputs
             if (etFullName.getText().toString().trim().isEmpty() ||
                     etAddress.getText().toString().trim().isEmpty() ||
                     etPhoneNumber.getText().toString().trim().isEmpty() ||
@@ -259,19 +270,132 @@ public class Checkout extends AppCompatActivity {
                 Toast.makeText(Checkout.this, "Pilih provinsi dan kota tujuan terlebih dahulu", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (shippingCost == 0 && totalWeight > 0) { // Jika berat ada, tapi ongkir 0, berarti belum cek ongkir
+
+            if (shippingCost == 0 && totalWeight > 0) {
                 Toast.makeText(Checkout.this, "Silakan cek ongkir", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            if (orderItems == null || orderItems.isEmpty()) {
+                Toast.makeText(Checkout.this, "Keranjang belanja kosong", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Show loading dialog
+            ProgressDialog progressDialog = new ProgressDialog(Checkout.this);
+            progressDialog.setMessage("Memproses pesanan...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            // Prepare order data
             double finalTotalPayment = subtotal + shippingCost + taxAmount;
-            String checkoutMessage = String.format("Checkout berhasil!\nNama: %s\nAlamat: %s\nTelepon: %s\nMetode Pembayaran: %s\nTotal: Rp %,.0f",
-                    etFullName.getText().toString().trim(),
-                    etAddress.getText().toString().trim(),
-                    etPhoneNumber.getText().toString().trim(),
-                    etKodepos.getText().toString().trim(),
-                    selectedPaymentMethod,
-                    finalTotalPayment);
-            Toast.makeText(Checkout.this, checkoutMessage, Toast.LENGTH_LONG).show();
+
+            // Create order JSON object
+            JSONObject orderJson = new JSONObject();
+            try {
+                orderJson.put("email", userEmail);
+                orderJson.put("subtotal", subtotal);
+                orderJson.put("ongkir", shippingCost);
+                orderJson.put("total_bayar", finalTotalPayment);
+                orderJson.put("alamat_kirim", etAddress.getText().toString());
+                orderJson.put("telp_kirim", etPhoneNumber.getText().toString());
+                orderJson.put("kota", spinnerCity.getSelectedItem().toString());
+                orderJson.put("provinsi", spinnerProvince.getSelectedItem().toString());
+                orderJson.put("lamakirim", estimatedDelivery);
+                orderJson.put("kodepos", etKodepos.getText().toString());
+                orderJson.put("metodebayar", getSelectedPaymentMethod);
+                orderJson.put("buktibayar", "");
+                orderJson.put("status", 0);
+            } catch (JSONException e) {
+                progressDialog.dismiss();
+                Toast.makeText(Checkout.this, "Gagal mempersiapkan data order", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+                return;
+            }
+
+            // Create order detail JSON array
+            JSONArray orderDetailArray = new JSONArray();
+            try {
+                for (OrderItem item : orderItems) {
+                    JSONObject itemJson = new JSONObject();
+                    itemJson.put("kode", item.getKode());
+                    itemJson.put("harga", item.getHargajual());
+                    itemJson.put("qty", item.getQty());
+                    orderDetailArray.put(itemJson);
+                }
+            } catch (JSONException e) {
+                progressDialog.dismiss();
+                Toast.makeText(Checkout.this, "Gagal mempersiapkan detail order", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+                return;
+            }
+
+            // Create Retrofit instance
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(ServerAPI.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            RegisterAPI api = retrofit.create(RegisterAPI.class);
+
+            // Make the API call
+            api.createOrder(
+                    RequestBody.create(MediaType.parse("application/json"), orderJson.toString()),
+                    RequestBody.create(MediaType.parse("application/json"), orderDetailArray.toString())
+            ).enqueue(new retrofit2.Callback<ResponseBody>() {
+                @Override
+                public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    progressDialog.dismiss();
+
+                    if (response.isSuccessful() && response.body() != null) {
+                        try {
+                            String responseStr = response.body().string();
+                            JSONObject jsonResponse = new JSONObject(responseStr);
+
+                            if (jsonResponse.getInt("kode") == 1) {
+                                // Order created successfully
+                                int orderId = jsonResponse.getInt("orderid");
+
+                                // Clear the cart
+                                SharedPreferences orderPrefs = getSharedPreferences("OrderPrefs", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = orderPrefs.edit();
+                                editor.remove("order_items");
+                                editor.apply();
+
+                                // Show success message and navigate to order confirmation
+                                Toast.makeText(Checkout.this, "Pesanan berhasil dibuat", Toast.LENGTH_SHORT).show();
+
+                                if(getSelectedPaymentMethod == 0){
+                                    Intent intent = new Intent(Checkout.this, OrderHistory.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Intent intent = new Intent(Checkout.this, OrderConfirmation.class);
+                                    intent.putExtra("order_id", orderId);
+                                    startActivity(intent);
+                                    finish();
+                                }
+
+                            } else {
+                                String errorMsg = jsonResponse.getString("pesan");
+                                Toast.makeText(Checkout.this, "Gagal: " + errorMsg, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(Checkout.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(Checkout.this, "Gagal membuat pesanan. Kode: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Toast.makeText(Checkout.this, "Gagal terhubung ke server: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    t.printStackTrace();
+                }
+            });
         });
     }
 

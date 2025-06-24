@@ -176,6 +176,7 @@ public class BestSellerAdapter extends RecyclerView.Adapter<BestSellerAdapter.Be
 
             if (!productExists) {
                 orderItems.add(new OrderItem(
+                        product.getKode(),
                         product.getFoto(),
                         product.getMerk(),
                         product.getHargajual(),

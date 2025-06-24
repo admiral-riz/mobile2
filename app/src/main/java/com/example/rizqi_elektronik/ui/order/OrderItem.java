@@ -1,6 +1,7 @@
 package com.example.rizqi_elektronik.ui.order;
 
 public class OrderItem {
+    private String kode;
     private String foto;
     private String merk;
     private double hargajual;
@@ -8,7 +9,8 @@ public class OrderItem {
     private int qty;
 
     // Constructor
-    public OrderItem(String foto, String merk, double hargajual, int stok, int qty) {
+    public OrderItem(String kode, String foto, String merk, double hargajual, int stok, int qty) {
+        this.kode = kode;
         this.foto = foto;
         this.merk = merk;
         this.hargajual = hargajual;
@@ -17,6 +19,7 @@ public class OrderItem {
     }
 
     // Getters and Setters
+    public String getKode() { return kode; }
     public String getFoto() { return foto; }
     public String getMerk() { return merk; }
     public double getHargajual() { return hargajual; }

@@ -6,6 +6,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -61,8 +62,10 @@ public interface RegisterAPI {
     Call<ResponseBody> updateView(
             @Field("kode") String kode
     );
+
     @GET("get_produk_desc.php")
     Call<List<Product>> getBestSellerProducts();
+
     @Multipart
     @POST("upload_profile.php")
     Call<ResponseBody> uploadFoto(
@@ -76,5 +79,22 @@ public interface RegisterAPI {
             @Query("old_password") String oldPassword,
             @Query("new_password") String newPassword
     );
+
+    @Multipart
+    @POST("post_order.php")
+    Call<ResponseBody> createOrder(
+            @Part("order") RequestBody order,
+            @Part("order_detail") RequestBody orderDetail
+    );
+
+    @Multipart
+    @POST("post_payment.php")
+    Call<ResponseBody> uploadPaymentProof(
+            @Part("order_id") RequestBody orderId,
+            @Part MultipartBody.Part paymentProof
+    );
+
+    @GET("get_order_history.php")
+    Call<OrderResponse> getOrderHistory(@Query("email") String email);
 
 }

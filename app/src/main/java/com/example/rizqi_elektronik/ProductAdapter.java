@@ -98,6 +98,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.imgbtnCart.setOnClickListener(v -> {
             if (product.getStok() > 0) {
                 OrderItem orderItem = new OrderItem(
+                        product.getKode(),
                         product.getFoto(),
                         product.getMerk(),
                         product.getHargajual(),

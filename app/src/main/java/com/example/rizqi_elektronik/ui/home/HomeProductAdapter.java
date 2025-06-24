@@ -114,6 +114,7 @@ public class HomeProductAdapter extends RecyclerView.Adapter<HomeProductAdapter.
 
             if (!productExists) {
                 orderItems.add(new OrderItem(
+                        product.getKode(),
                         product.getFoto(),
                         product.getMerk(),
                         product.getHargajual(),
