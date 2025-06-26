@@ -355,6 +355,7 @@ public class Checkout extends AppCompatActivity {
                             if (jsonResponse.getInt("kode") == 1) {
                                 // Order created successfully
                                 int orderId = jsonResponse.getInt("orderid");
+                                double totalAmount = finalTotalPayment;
 
                                 // Clear the cart
                                 SharedPreferences orderPrefs = getSharedPreferences("OrderPrefs", MODE_PRIVATE);
@@ -372,6 +373,7 @@ public class Checkout extends AppCompatActivity {
                                 } else {
                                     Intent intent = new Intent(Checkout.this, OrderConfirmation.class);
                                     intent.putExtra("order_id", orderId);
+                                    intent.putExtra("total_amount", totalAmount);
                                     startActivity(intent);
                                     finish();
                                 }
