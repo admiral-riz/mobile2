@@ -49,7 +49,8 @@ public interface RegisterAPI {
     @GET("get_produk.php") // Sesuaikan dengan URL API Anda
     Call<List<Product>> getProducts();
 
-
+    @GET("get_produk_asc.php") // Sesuaikan dengan URL API Anda
+    Call<List<Product>> getProductsasc();
 
     @GET("get_view.php")
     Call<ResponseBody> getViewCount(

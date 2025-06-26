@@ -172,7 +172,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadAllProducts() {
-        registerAPI.getProducts().enqueue(new Callback<List<Product>>() {
+        registerAPI.getProductsasc().enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 if (response.isSuccessful() && response.body() != null) {
