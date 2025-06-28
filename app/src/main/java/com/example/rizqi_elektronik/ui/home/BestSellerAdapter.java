@@ -38,7 +38,7 @@ public class BestSellerAdapter extends RecyclerView.Adapter<BestSellerAdapter.Be
     private List<Product> productList = new ArrayList<>();
 
     public void setProductList(List<Product> products) {
-        products.sort((p1, p2) -> Integer.compare(p2.getViewCount(), p1.getViewCount())); // descending
+        products.sort((p1, p2) -> Integer.compare(p2.getViewCount(), p1.getViewCount()));
         this.productList = products;
         notifyDataSetChanged();
     }
